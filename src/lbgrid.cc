@@ -2,9 +2,8 @@
 
 lbgrid::lbgrid(int nx, int ny) : nx_{nx}, ny_{ny} {
   for (unsigned i = 0; i < nx_; ++i) {
-    f[i] = new double *[ny_]();
-    for (unsigned j = 0; j < ny_; ++j)
-      f[i][j] = new double[Q]();
+    f[i] = new double*[ny_]();
+    for (unsigned j = 0; j < ny_; ++j) f[i][j] = new double[Q]();
   }
 }
 
@@ -16,7 +15,7 @@ int lbgrid::ny_value() {
   return ny_;
 }
 
-#pragma omp parallel for default(shared) private(i,j) schedule(dynamic, chunk)
+#pragma omp parallel for default(shared) private(i, j) schedule(dynamic, chunk)
 void lbgrid::initialize_density(double rho) {
   for (int i = 0; i < nx_; ++i) {
     for (int j = 0; j < ny_; ++j) {
@@ -27,17 +26,13 @@ void lbgrid::initialize_density(double rho) {
   }
 }
 
-double lbgrid::density_function(int i,int j,int k) {
-  return f[i][j][k];
-}
-
+double lbgrid::density_function(int i, int j, int k) { return f[i][j][k]; }
 
 #pragma omp parallel for default(shared) private(i) schedule(dynamic, chunk) reducation(+:total_mass)
 double lbgrid::sum_density() {
   for (int i = 0; i < nx_; ++i) {
     for (int j = 0; j < ny_; ++j) {
-      for (int k = 0; k < Q; ++k)
-        total_mass += f[i][j][k];
+      for (int k = 0; k < Q; ++k) total_mass += f[i][j][k];
     }
   }
   return total_mass;
@@ -45,8 +40,7 @@ double lbgrid::sum_density() {
 
 lbgrid::~lbgrid() {
   for (int i = 0; i < nx_; ++i) {
-    for (int j = 0; j < ny_; ++j)
-      delete[] f[i][j];
+    for (int j = 0; j < ny_; ++j) delete[] f[i][j];
     delete[] f[i];
   }
   delete[] f;

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 
   double rho;
   int nx, ny;
@@ -15,8 +15,8 @@ int main(int argc, char **argv) {
     std::abort();
   }
 
-  std::unique_ptr<lbgrid> grid=std::make_unique<lbgrid>(nx, ny);
+  std::unique_ptr<lbgrid> grid = std::make_unique<lbgrid>(nx, ny);
   grid->initialize_density(rho);
-  std::cout<<grid->density_function(0,0,0)<<"\n";
-  std::cout<<grid->sum_density()<<"\n";
+  std::cout << grid->density_function(0, 0, 0) << "\n";
+  std::cout << grid->sum_density() << "\n";
 }

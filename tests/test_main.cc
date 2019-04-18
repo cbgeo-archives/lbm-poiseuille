@@ -5,12 +5,11 @@
 
 int main(int argc, char** argv) {
   Catch::Session session;
-  //Let Catch (using Clara) parse the command line
-  int returncode=session.applyCommandLine(argc, argv);
-  if (returncode != 0)
-    return returncode;
+  // Let Catch (using Clara) parse the command line
+  int returncode = session.applyCommandLine(argc, argv);
+  if (returncode != 0) return returncode;
 
-  int result=session.run();
+  int result = session.run();
 
   return result;
 }

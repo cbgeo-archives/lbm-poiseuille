@@ -8,6 +8,14 @@ lbgrid::lbgrid(int nx, int ny) : nx_{nx}, ny_{ny} {
   }
 }
 
+int lbgrid::nx_value() {
+  return nx_;
+}
+
+int lbgrid::ny_value() {
+  return ny_;
+}
+
 #pragma omp parallel for default(shared) private(i,j) schedule(dynamic, chunk)
 void lbgrid::initialize_density(double rho) {
   for (int i = 0; i < nx_; ++i) {

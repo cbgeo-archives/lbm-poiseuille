@@ -1,6 +1,7 @@
 #include "lbgrid.h"
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 
 int main(int argc, char **argv) {
 
@@ -14,8 +15,8 @@ int main(int argc, char **argv) {
     std::abort();
   }
 
-  lbgrid grid(nx, ny);
-  grid.initialize_density(rho);
-  grid.print_f();
-  grid.check_density();
+  std::unique_ptr<lbgrid> grid=std::make_unique<lbgrid>(nx, ny);
+  grid->initialize_density(rho);
+  std::cout<<grid->density_function(0,0,0)<<"\n";
+  std::cout<<grid->sum_density()<<"\n";
 }

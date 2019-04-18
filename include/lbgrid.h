@@ -13,8 +13,8 @@ private:
 public:
   lbgrid(int nx, int ny);
   void initialize_density(double rho);
-  void print_f();
-  void check_density();
+  double density_function(int i,int j,int k);
+  double sum_density();
   ~lbgrid();
 };
 

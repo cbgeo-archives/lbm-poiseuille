@@ -12,10 +12,10 @@ class lbgrid {
 
  public:
   lbgrid(int nx, int ny);
-  int nx_value();
-  int ny_value();
+  const int nx_value();
+  const int ny_value();
   void initialize_density(double rho);
-  double density_function(int i, int j, int k);
+  const double density_function(int i, int j, int k);
   double sum_density();
   ~lbgrid();
 };

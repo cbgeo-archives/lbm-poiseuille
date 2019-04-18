@@ -7,11 +7,11 @@ lbgrid::lbgrid(int nx, int ny) : nx_{nx}, ny_{ny} {
   }
 }
 
-int lbgrid::nx_value() {
+const int lbgrid::nx_value() {
   return nx_;
 }
 
-int lbgrid::ny_value() {
+const int lbgrid::ny_value() {
   return ny_;
 }
 
@@ -26,7 +26,7 @@ void lbgrid::initialize_density(double rho) {
   }
 }
 
-double lbgrid::density_function(int i, int j, int k) { return f[i][j][k]; }
+const double lbgrid::density_function(int i, int j, int k) { return f[i][j][k]; }
 
 #pragma omp parallel for default(shared) private(i) schedule(dynamic, chunk) reducation(+:total_mass)
 double lbgrid::sum_density() {

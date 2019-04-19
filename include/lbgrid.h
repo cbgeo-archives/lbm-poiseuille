@@ -17,6 +17,6 @@ class lbgrid {
   int ny_;
   const int Q = 9;
   double*** f = new double**[nx_];
-};
+ };
 
 #endif

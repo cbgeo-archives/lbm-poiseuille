@@ -9,8 +9,8 @@ TEST_CASE("Functionality of the lbgrid class is checked", "[lbgrid]") {
   const double Tolerance = 1.E-7;
 
   std::unique_ptr<lbgrid> grid = std::make_unique<lbgrid>(nx, ny);
-  REQUIRE(grid->nx_value()==2);
-  REQUIRE(grid->ny_value()==3);
+  REQUIRE(grid->nx() == 2);
+  REQUIRE(grid->ny() == 3);
   REQUIRE(grid->density_function(0, 0, 0) == Approx(0.).epsilon(Tolerance));
 
   grid->initialize_density(rho);

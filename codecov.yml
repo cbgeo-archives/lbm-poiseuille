@@ -1,4 +1,4 @@
-# Codecov.io configuration
+#Codecov.io configuration
 codecov:
   branch: develop  # override the default branch
 

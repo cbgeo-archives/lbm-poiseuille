@@ -29,10 +29,13 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-undefined-var-template")
 endif()
 
+option(LBM_BUILD_TESTING "enable testing for lbm" ON)
+
 
 # Include directories
 include_directories(BEFORE
   ${lbm_SOURCE_DIR}/include/
+  ${lbm_SOURCE_DIR}/external/
 )
 
 # lbm executable
@@ -45,3 +48,14 @@ add_library(llbm SHARED ${lbm_src})
 add_executable(lbm ${lbm_SOURCE_DIR}/src/main.cc)
 target_link_libraries(lbm llbm)
 
+# Unit test
+if(LBM_BUILD_TESTING)
+  SET(test_src
+    ${lbm_SOURCE_DIR}/tests/test_main.cc
+    ${lbm_SOURCE_DIR}/tests/lbgrid_test.cc
+    )
+  add_executable(lbmtest ${test_src})
+  target_link_libraries(lbmtest llbm)
+  add_test(NAME lbmtest COMMAND $<TARGET_FILE:lbmtest>)
+  enable_testing()
+endif()

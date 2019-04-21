@@ -3,19 +3,20 @@
 #include <iostream>
 
 class lbgrid {
-private:
+ public:
+  lbgrid(int nx, int ny);
+  unsigned nx() const { return nx_; };
+  unsigned ny() const { return ny_; };
+  void initialize_density(double rho);
+  double density_function(int i, int j, int k) const { return f[i][j][k]; };
+  double sum_density();
+  ~lbgrid();
+
+ private:
   int nx_;
   int ny_;
   const int Q = 9;
-  double ***f = new double **[nx_];
-  double total_mass = 0.0;
-
-public:
-  lbgrid(int nx, int ny);
-  void initialize_density(double rho);
-  void print_f();
-  void check_density();
-  ~lbgrid();
+  double*** f = new double**[nx_];
 };
 
 #endif

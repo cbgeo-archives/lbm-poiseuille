@@ -20,16 +20,28 @@ class lbgrid {
 
   //! Calculates the initial density functions
   //! \param[in] rho density
-  void initialize_density(double rho);
+  void initialize_density(double rho_0);
 
   //! Returns the density function at a node in a certain direction
   //! \param[in] i number of node in the x direction
   //! \param[in] j number of node in the y direction
   //! \param[in] k direction (0 to 8)
-  double density_function(int i, int j, int k) const { return f[i][j][k]; };
+  double f_(int i, int j, int k) const { return f[i][j][k]; };
 
   //! Returns the total mass
   double sum_density();
+
+  void compute_macro_var ();
+
+  double ux_(int i, int j) {return ux[i][j];};
+  double uy_(int i, int j) {return uy[i][j];}; 
+
+  void equilibrium_density(double Fx, double Fy, double rho_0, double dt);
+  double feq_(int i, int j , int k) {return feq[i][j][k];};
+
+  void collision(double tau);
+  double fcol_(int i, int j, int k) {return fcol[i][j][k];};
+  void streaming();
 
   //! Destructor
   ~lbgrid();
@@ -38,7 +50,14 @@ class lbgrid {
   int nx_;
   int ny_;
   const int Q = 9;
+  const double w0 = 4./9.;
+  const double w1_4 =1./9.;
+  const double w5_8 = 1./36.;
+  double rho;
   double*** f = new double**[nx_];
+  double** ux=new double*[nx_];
+  double** uy=new double*[nx_];
+  double*** feq= new double**[nx_];
+  double*** fcol= new double**[nx_];
 };
-
 #endif

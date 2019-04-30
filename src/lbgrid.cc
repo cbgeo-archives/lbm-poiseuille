@@ -42,7 +42,7 @@ void lbgrid::compute_macro_var(double dt, double Fx, double Fy) {
     for (int j = 0; j < ny_; ++j) {
       rho = f[i][j][0] + f[i][j][1] + f[i][j][2] + f[i][j][3] + f[i][j][4] +
             f[i][j][5] + f[i][j][6] + f[i][j][7] + f[i][j][8];
-      std::cout<<"rho is = "<<rho<<std::endl;
+      std::cout << "rho is = " << rho << std::endl;
       ux[i][j] = (f[i][j][1] + f[i][j][5] + f[i][j][8] -
                   (f[i][j][3] + f[i][j][6] + f[i][j][7])) /
                  rho;
@@ -60,7 +60,7 @@ void lbgrid::equilibrium_density(double dt) {
   double a3 = 3. / 2.;
 
   for (int i = 0; i < nx_; ++i) {
-    for (int j = 1; j < ny_-1; ++j) {
+    for (int j = 1; j < ny_ - 1; ++j) {
 
       const double uxsq = ux[i][j] * ux[i][j];
       const double uysq = uy[i][j] * uy[i][j];
@@ -96,14 +96,14 @@ void lbgrid::collision(double tau, double dt, double Fx, double Fy) {
 
       double S[8];
       S[0] = 0.;
-      S[1] = (1 - 0.5 * dt / tau) * w1_4 *(3 * Fx);
-      S[2]=(1-0.5*dt/tau)*w1_4*(3*Fy);
-      S[3]=(1-0.5*dt/tau)*w1_4*(-3*Fx);
-      S[4]=(1-0.5*dt/tau)*w1_4*(-3*Fy);
-      S[5] =(1-0.5*dt/tau)*w5_8*(3*Fx+3*Fy); 
-      S[6] =(1-0.5*dt/tau)*w5_8*(-3*Fx+3*Fy); 
-      S[7] =(1-0.5*dt/tau)*w5_8*(-3*Fx-3*Fy); 
-      S[8] =(1-0.5*dt/tau)*w5_8*(3*Fx-3*Fy); 
+      S[1] = (1 - 0.5 * dt / tau) * w1_4 * (3 * Fx);
+      S[2] = (1 - 0.5 * dt / tau) * w1_4 * (3 * Fy);
+      S[3] = (1 - 0.5 * dt / tau) * w1_4 * (-3 * Fx);
+      S[4] = (1 - 0.5 * dt / tau) * w1_4 * (-3 * Fy);
+      S[5] = (1 - 0.5 * dt / tau) * w5_8 * (3 * Fx + 3 * Fy);
+      S[6] = (1 - 0.5 * dt / tau) * w5_8 * (-3 * Fx + 3 * Fy);
+      S[7] = (1 - 0.5 * dt / tau) * w5_8 * (-3 * Fx - 3 * Fy);
+      S[8] = (1 - 0.5 * dt / tau) * w5_8 * (3 * Fx - 3 * Fy);
 
       for (int q = 0; q < Q; ++q) {
         fcol[i][j][q] =
@@ -115,33 +115,33 @@ void lbgrid::collision(double tau, double dt, double Fx, double Fy) {
 
 void lbgrid::streaming() {
   for (int i = 0; i < nx_; ++i) {
-    f[i][0][2]=fcol[i][0][4];
-    f[i][0][5]=fcol[i][0][7];
-    f[i][0][6]=fcol[i][0][8];
-    f[i][ny_-1][4]=fcol[i][ny_-1][2];
-    f[i][ny_-1][7]=fcol[i][ny_-1][5];
-    f[i][ny_-1][8]=fcol[i][ny_-1][6];
+    f[i][0][2] = fcol[i][0][4];
+    f[i][0][5] = fcol[i][0][7];
+    f[i][0][6] = fcol[i][0][8];
+    f[i][ny_ - 1][4] = fcol[i][ny_ - 1][2];
+    f[i][ny_ - 1][7] = fcol[i][ny_ - 1][5];
+    f[i][ny_ - 1][8] = fcol[i][ny_ - 1][6];
 
     int in = (i > 0) ? (i - 1) : (nx_ - 1);
     int ip = (i < nx_ - 1) ? (i + 1) : (0);
     for (int j = 0; j < ny_; ++j) {
-      int jn = j-1;
+      int jn = j - 1;
       int jp = j + 1;
 
       f[i][j][0] = fcol[i][j][0];
       f[ip][j][1] = fcol[i][j][1];
       f[in][j][3] = fcol[i][j][3];
 
-      if (j!=ny_-1) {
-      f[i][jp][2] = fcol[i][j][2];
-      f[ip][jp][5] = fcol[i][j][5];
-      f[in][jp][6] = fcol[i][j][6];
+      if (j != ny_ - 1) {
+        f[i][jp][2] = fcol[i][j][2];
+        f[ip][jp][5] = fcol[i][j][5];
+        f[in][jp][6] = fcol[i][j][6];
       }
 
-      if (j!=0) {
-      f[i][jn][4] = fcol[i][j][4];
-      f[in][jn][7] = fcol[i][j][7];
-      f[ip][jn][8] = fcol[i][j][8];
+      if (j != 0) {
+        f[i][jn][4] = fcol[i][j][4];
+        f[in][jn][7] = fcol[i][j][7];
+        f[ip][jn][8] = fcol[i][j][8];
       }
     }
   }
@@ -153,4 +153,47 @@ lbgrid::~lbgrid() {
     delete[] f[i];
   }
   delete[] f;
+}
+
+void lbgrid::write_vtk(int nstep) {
+  int x, y, i;
+  double pasxyz;
+  double P, u_x, u_y;
+  char filename[25];
+  FILE* sortie;
+
+  std::cout << "Test\n";
+  sprintf(filename, "lbm%.6i.vtk", nstep);
+  pasxyz = 1.;
+  sortie = fopen(filename, "w");
+  fprintf(sortie, "# vtk DataFile Version 2.0\n");
+  fprintf(sortie, "Sortie domaine LB+LINK t %e\n", nstep);
+  fprintf(sortie, "ASCII\n");
+  fprintf(sortie, "DATASET RECTILINEAR_GRID\n");
+  fprintf(sortie, "DIMENSIONS %d %d 1\n", nx_, ny_);
+  fprintf(sortie, "X_COORDINATES %d float\n", nx_);
+  for (i = 0; i < nx_; ++i) fprintf(sortie, "%e ", (float)i * pasxyz);
+  fprintf(sortie, "\n");
+  fprintf(sortie, "Y_COORDINATES %d float\n", ny_);
+  for (i = 0; i < ny_; ++i) fprintf(sortie, "%e ", (float)i * pasxyz);
+  fprintf(sortie, "\n");
+  fprintf(sortie, "Z_COORDINATES 1 float\n");
+  fprintf(sortie, "0\n");
+
+  // For LB
+  fprintf(sortie, "POINT_DATA %d\n", nx_ * ny_);
+  fprintf(sortie, "VECTORS VecVelocity float\n");
+
+  for (y = 0; y < ny_; ++y) {
+    for (x = 0; x < nx_; ++x) {
+      u_x = 0.;
+      u_y = 0.;
+      for (i = 0; i < Q; i++) {
+        u_x += f[x][y][i] * ex[i];
+        u_y += f[x][y][i] * ey[i];
+      }
+      fprintf(sortie, "%.4lf %.4lf 0.\n", u_x, u_y);
+    }
+  }
+  fclose(sortie);
 }

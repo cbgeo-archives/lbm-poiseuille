@@ -31,18 +31,21 @@ class lbgrid {
   //! Returns the total mass
   double sum_density();
 
-  void compute_macro_var (double dt, double Fx, double Fy);
+  void compute_macro_var(double dt, double Fx, double Fy);
 
-  double ux_(int i, int j) {return ux[i][j];};
-  double uy_(int i, int j) {return uy[i][j];}; 
-  double * uxsection(int i) {return ux[i];};
+  double ux_(int i, int j) { return ux[i][j]; };
+  double uy_(int i, int j) { return uy[i][j]; };
+  double* uxsection(int i) { return ux[i]; };
 
   void equilibrium_density(double dt);
-  double feq_(int i, int j , int k) {return feq[i][j][k];};
+  double feq_(int i, int j, int k) { return feq[i][j][k]; };
 
   void collision(double tau, double dt, double Fx, double Fy);
-  double fcol_(int i, int j, int k) {return fcol[i][j][k];};
+  double fcol_(int i, int j, int k) { return fcol[i][j][k]; };
   void streaming();
+
+  //! Write VTK
+  void write_vtk(int nstep);
 
   //! Destructor
   ~lbgrid();
@@ -51,14 +54,16 @@ class lbgrid {
   int nx_;
   int ny_;
   const int Q = 9;
-  const double w0 = 4./9.;
-  const double w1_4 =1./9.;
-  const double w5_8 = 1./36.;
+  int ex[9] = {0, -1, -1, -1, 0, 1, 1, 1, 0};
+  int ey[9] = {0, 1, 0, -1, -1, -1, 0, 1, 1};
+  const double w0 = 4. / 9.;
+  const double w1_4 = 1. / 9.;
+  const double w5_8 = 1. / 36.;
   double rho;
   double*** f = new double**[nx_];
-  double** ux=new double*[nx_];
-  double** uy=new double*[nx_];
-  double*** feq= new double**[nx_];
-  double*** fcol= new double**[nx_];
+  double** ux = new double*[nx_];
+  double** uy = new double*[nx_];
+  double*** feq = new double**[nx_];
+  double*** fcol = new double**[nx_];
 };
 #endif

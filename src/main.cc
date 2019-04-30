@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 
   for (int i = 0; i < 3; ++i) {
     std::cout << i << std::endl;
-    grid->compute_macro_var(dt,Fx,Fy);
+    grid->compute_macro_var(dt, Fx, Fy);
     std::cout << grid->ux_(0, 0) << "\n";
     std::cout << grid->uy_(0, 0) << "\n";
     grid->equilibrium_density(dt);
@@ -36,10 +36,11 @@ int main(int argc, char** argv) {
     grid->streaming();
     std::cout << grid->f_(0, 0, 0) << "\n";
     std::cout << grid->sum_density() << "\n";
+    grid->write_vtk(i);
   }
 
-  std::cout<<"Ux at x=0"<<std::endl;
-for (int j=20;j<ny;++j) {
-  std::cout<< grid->uxsection(0)[j]<<std::endl;
-}
+  std::cout << "Ux at x=0" << std::endl;
+  for (int j = 20; j < ny; ++j) {
+    std::cout << grid->uxsection(0)[j] << std::endl;
+  }
 }

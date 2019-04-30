@@ -31,15 +31,16 @@ class lbgrid {
   //! Returns the total mass
   double sum_density();
 
-  void compute_macro_var ();
+  void compute_macro_var (double dt, double Fx, double Fy);
 
   double ux_(int i, int j) {return ux[i][j];};
   double uy_(int i, int j) {return uy[i][j];}; 
+  double * uxsection(int i) {return ux[i];};
 
-  void equilibrium_density(double Fx, double Fy, double rho_0, double dt);
+  void equilibrium_density(double dt);
   double feq_(int i, int j , int k) {return feq[i][j][k];};
 
-  void collision(double tau);
+  void collision(double tau, double dt, double Fx, double Fy);
   double fcol_(int i, int j, int k) {return fcol[i][j][k];};
   void streaming();
 

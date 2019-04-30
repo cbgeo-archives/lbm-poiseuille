@@ -24,17 +24,22 @@ int main(int argc, char** argv) {
   std::cout << grid->f_(0, 0, 0) << "\n";
   std::cout << grid->sum_density() << "\n";
 
-  for (int i = 0; i < 100; ++i) {
+  for (int i = 0; i < 3; ++i) {
     std::cout << i << std::endl;
-    grid->compute_macro_var();
+    grid->compute_macro_var(dt,Fx,Fy);
     std::cout << grid->ux_(0, 0) << "\n";
     std::cout << grid->uy_(0, 0) << "\n";
-    grid->equilibrium_density(Fx, Fy, rho_0, dt);
-    std::cout<<grid->feq_(0,0,0)<<"\n";
-    grid->collision(tau);
-    std::cout<<grid->fcol_(0,0,0)<<"\n";
+    grid->equilibrium_density(dt);
+    std::cout << grid->feq_(0, 0, 0) << "\n";
+    grid->collision(tau, dt, Fx, Fy);
+    std::cout << grid->fcol_(0, 0, 0) << "\n";
     grid->streaming();
     std::cout << grid->f_(0, 0, 0) << "\n";
     std::cout << grid->sum_density() << "\n";
   }
+
+  std::cout<<"Ux at x=0"<<std::endl;
+for (int j=20;j<ny;++j) {
+  std::cout<< grid->uxsection(0)[j]<<std::endl;
+}
 }

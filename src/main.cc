@@ -28,22 +28,22 @@ int main(int argc, char** argv) {
   for (int i = 0; i <= nstep; ++i) {
      std::cout << "step number = "<<i << std::endl;
     grid->compute_macro_var(dt, Fx, Fy);
-    std::cout << "ux(2,2) = " << grid->ux_(2, 2) << "\n";
-    std::cout << "uy(2,2) = " << grid->uy_(2, 2) << "\n";
+   // std::cout << "ux(2,2) = " << grid->ux_(2, 2) << "\n";
+   // std::cout << "uy(2,2) = " << grid->uy_(2, 2) << "\n";
     grid->equilibrium_density(dt);
-     std::cout << "feq(2,2,1) = "<<grid->feq_(2, 2, 1) << "\n";
+   //  std::cout << "feq(2,2,1) = "<<grid->feq_(2, 2, 1) << "\n";
     grid->collision(tau, dt, Fx, Fy);
-     std::cout << "fcol(2,2,1) = "<<grid->fcol_(2, 2, 1) << "\n";
+   //  std::cout << "fcol(2,2,1) = "<<grid->fcol_(2, 2, 1) << "\n";
     grid->streaming();
-     std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 1) << "\n";
-     std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 2) << "\n";
-     std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 3) << "\n";
-     std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 4) << "\n";
-     std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 5) << "\n";
-     std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 6) << "\n";
-     std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 7) << "\n";
-     std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 8) << "\n";
-     std::cout << "sum_density = "<<grid->sum_density() << "\n";
+    /* std::cout << "f(2,2,1) = "<<grid->f_(2, 2, 1) << "\n";
+     std::cout << "f(2,2,2) = "<<grid->f_(2, 2, 2) << "\n";
+     std::cout << "f(2,2,3) = "<<grid->f_(2, 2, 3) << "\n";
+     std::cout << "f(2,2,4) = "<<grid->f_(2, 2, 4) << "\n";
+     std::cout << "f(2,2,5) = "<<grid->f_(2, 2, 5) << "\n";
+     std::cout << "f(2,2,6) = "<<grid->f_(2, 2, 6) << "\n";
+     std::cout << "f(2,2,7) = "<<grid->f_(2, 2, 7) << "\n";
+     std::cout << "f(2,2,8) = "<<grid->f_(2, 2, 8) << "\n";
+     std::cout << "sum_density = "<<grid->sum_density() << "\n";*/
     grid->compute_macro_var(dt,Fx,Fy);
     grid->write_vtk(i);
   }

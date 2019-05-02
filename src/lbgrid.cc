@@ -68,12 +68,12 @@ void lbgrid::equilibrium_density(double dt) {
       const double uxy5 = ux[i][j] + uy[i][j];
       const double uxy6 = -ux[i][j] + uy[i][j];
       const double uxy7 = -ux[i][j] - uy[i][j];
-      const double uxy8 = ux[i][j] - ux[i][j];
+      const double uxy8 = ux[i][j] - uy[i][j];
 
       rho = f[i][j][0] + f[i][j][1] + f[i][j][2] + f[i][j][3] + f[i][j][4] +
             f[i][j][5] + f[i][j][6] + f[i][j][7] + f[i][j][8];
 
-      std::cout<<"rho = "<<rho<<std::endl;
+     // std::cout << "rho = " << rho << std::endl;
 
       feq[i][j][0] = w0 * rho * (1. - a3 * usq);
       feq[i][j][1] = w1_4 * rho * (1. + a1 * ux[i][j] + a2 * uxsq - a3 * usq);
@@ -133,16 +133,17 @@ void lbgrid::streaming() {
       f[in][jn][7] = fcol[i][j][7];
       f[ip][jn][8] = fcol[i][j][8];
     }
+  }
 
-    /*f[i][0][2] = fcol[i][0][4];
-    f[i][0][5] = fcol[i][0][7];
-    f[i][0][6] = fcol[i][0][8];
-    f[i][ny_ - 1][4] = fcol[i][ny_ - 1][2];
-    f[i][ny_ - 1][7] = fcol[i][ny_ - 1][5];
-    f[i][ny_ - 1][8] = fcol[i][ny_ - 1][6];*/
+  for (int i=0; i<nx_;++i) {
+      f[i][0][2] = fcol[i][0][4];
+      f[i][0][5] = fcol[i][0][7];
+      f[i][0][6] = fcol[i][0][8];
+      f[i][ny_ - 1][4] = fcol[i][ny_ - 1][2];
+      f[i][ny_ - 1][7] = fcol[i][ny_ - 1][5];
+      f[i][ny_ - 1][8] = fcol[i][ny_ - 1][6];
   }
 }
-
 lbgrid::~lbgrid() {
   for (int i = 0; i < nx_; ++i) {
     for (int j = 0; j < ny_; ++j) delete[] f[i][j];

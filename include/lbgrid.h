@@ -54,8 +54,8 @@ class lbgrid {
   int nx_;
   int ny_;
   const int Q = 9;
-  int ex[9] = {0, -1, -1, -1, 0, 1, 1, 1, 0};
-  int ey[9] = {0, 1, 0, -1, -1, -1, 0, 1, 1};
+  int ex[9] = {0, 1,0 , -1, 0, 1, -1, -1, 1};
+  int ey[9] = {0, 0, 1, 0, -1, 1, 1, -1, -1};
   const double w0 = 4. / 9.;
   const double w1_4 = 1. / 9.;
   const double w5_8 = 1. / 36.;

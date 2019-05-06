@@ -1,4 +1,5 @@
 #include "lbgrid.h"
+#include <iomanip>
 
 lbgrid::lbgrid(int nx, int ny) : nx_{nx}, ny_{ny} {
   for (unsigned i = 0; i < nx_; ++i) {
@@ -7,6 +8,7 @@ lbgrid::lbgrid(int nx, int ny) : nx_{nx}, ny_{ny} {
     uy[i] = new double[ny_]();
     feq[i] = new double*[ny_]();
     fcol[i] = new double*[ny_]();
+    u_an[i] = new double[ny_]();
     for (unsigned j = 0; j < ny_; ++j) {
       f[i][j] = new double[Q]();
       feq[i][j] = new double[Q]();
@@ -73,7 +75,7 @@ void lbgrid::equilibrium_density(double dt) {
       rho = f[i][j][0] + f[i][j][1] + f[i][j][2] + f[i][j][3] + f[i][j][4] +
             f[i][j][5] + f[i][j][6] + f[i][j][7] + f[i][j][8];
 
-     // std::cout << "rho = " << rho << std::endl;
+      // std::cout << "rho = " << rho << std::endl;
 
       feq[i][j][0] = w0 * rho * (1. - a3 * usq);
       feq[i][j][1] = w1_4 * rho * (1. + a1 * ux[i][j] + a2 * uxsq - a3 * usq);
@@ -106,6 +108,7 @@ void lbgrid::collision(double tau, double dt, double Fx, double Fy) {
       S[6] = (1 - 0.5 * dt / tau) * w5_8 * (-3 * Fx + 3 * Fy);
       S[7] = (1 - 0.5 * dt / tau) * w5_8 * (-3 * Fx - 3 * Fy);
       S[8] = (1 - 0.5 * dt / tau) * w5_8 * (3 * Fx - 3 * Fy);
+  if(i==0 && j==0) std::cout<<std::setprecision(10)<<"S[5]="<<S[5]<<"\t"<<"S[7]= "<<S[7]<<std::endl;
 
       for (int q = 0; q < Q; ++q) {
         fcol[i][j][q] =
@@ -113,6 +116,7 @@ void lbgrid::collision(double tau, double dt, double Fx, double Fy) {
       }
     }
   }
+  std::cout<<std::setprecision(10)<<"feq(0,0,0)= "<<feq[0][0][5]<<"\t"<<"f(0,0,5)= "<<f[0][0][5]<<std::endl;
 }
 
 void lbgrid::streaming() {
@@ -135,15 +139,37 @@ void lbgrid::streaming() {
     }
   }
 
-  for (int i=0; i<nx_;++i) {
-      f[i][0][2] = fcol[i][0][4];
-      f[i][0][5] = fcol[i][0][7];
-      f[i][0][6] = fcol[i][0][8];
-      f[i][ny_ - 1][4] = fcol[i][ny_ - 1][2];
-      f[i][ny_ - 1][7] = fcol[i][ny_ - 1][5];
-      f[i][ny_ - 1][8] = fcol[i][ny_ - 1][6];
+  for (int i = 0; i < nx_; ++i) {
+    f[i][0][2] = fcol[i][0][4];
+    f[i][0][5] = fcol[i][0][7];
+    f[i][0][6] = fcol[i][0][8];
+    f[i][ny_ - 1][4] = fcol[i][ny_ - 1][2];
+    f[i][ny_ - 1][7] = fcol[i][ny_ - 1][5];
+    f[i][ny_ - 1][8] = fcol[i][ny_ - 1][6];
+  }
+  std::cout<<std::setprecision(10)<<fcol[0][0][5]<<"\t"<<fcol[0][0][7]<<"\t"<<fcol[0][0][5]-fcol[0][0][7]<<std::endl;
+  
+  std::cout<<std::setprecision(10)<<f[0][0][5]<<"\t"<<f[0][0][7]<<"\t"<<f[0][0][5]-f[0][0][7]<<std::endl;
+}
+
+void lbgrid::analytical_solution(double tau, int nt) {
+  double y, t;
+  double a;
+  
+  for (int i; i < nx_; ++i) {
+    for (int j = 0; j < ny_; ++j) {
+      y = -1+(double)j / (ny_/2);
+      t = nt * (tau - 0.5) / 3 / (ny_ /2) / (ny_ /2);
+      a=0.;
+      for (double n = 0; n < 50; ++n) {
+        a += pow(-1, n) * cos(M_PI * y * (n + 0.5)) / pow(M_PI, 3) /
+             pow((n + 0.5), 3) * exp(-pow(M_PI, 2) * t * pow((n + 0.5), 2));
+      }
+      u_an[i][j] = ((1 - y * y) - 4 * a);
+    }
   }
 }
+
 lbgrid::~lbgrid() {
   for (int i = 0; i < nx_; ++i) {
     for (int j = 0; j < ny_; ++j) delete[] f[i][j];

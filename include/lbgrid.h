@@ -1,5 +1,6 @@
 #ifndef LBGRID_H
 #define LBGRID_H
+#include <cmath>
 #include <iostream>
 
 //! \brief A class that stores the information about the grid
@@ -44,6 +45,9 @@ class lbgrid {
   double fcol_(int i, int j, int k) { return fcol[i][j][k]; };
   void streaming();
 
+  void analytical_solution(double tau, int nt);
+  double* u_an_section(int i) { return u_an[i]; };
+
   //! Write VTK
   void write_vtk(int nstep);
 
@@ -54,7 +58,7 @@ class lbgrid {
   int nx_;
   int ny_;
   const int Q = 9;
-  int ex[9] = {0, 1,0 , -1, 0, 1, -1, -1, 1};
+  int ex[9] = {0, 1, 0, -1, 0, 1, -1, -1, 1};
   int ey[9] = {0, 0, 1, 0, -1, 1, 1, -1, -1};
   const double w0 = 4. / 9.;
   const double w1_4 = 1. / 9.;
@@ -65,5 +69,6 @@ class lbgrid {
   double** uy = new double*[nx_];
   double*** feq = new double**[nx_];
   double*** fcol = new double**[nx_];
+  double** u_an = new double*[nx_];
 };
 #endif

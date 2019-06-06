@@ -47,7 +47,7 @@ class lbgrid {
 
   //! Return the macroscopic velocities in the x direction at a cross section
   //! \param[in] i node number in the x direction
-  double* uxsection(int i) { return ux[i]; };
+  double* uysection(int i) { return uy[i]; };
 
   //! Computes the equilibrium density function
   void equilibrium_density();

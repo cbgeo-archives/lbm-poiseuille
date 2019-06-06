@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <memory>
 
-// #define _log_
+#define _log_
 
 int main(int argc, char** argv) {
 
@@ -25,28 +25,33 @@ int main(int argc, char** argv) {
 
   std::unique_ptr<lbgrid> grid = std::make_unique<lbgrid>(nx, ny);
   grid->initialize_density(rho_0);
-  std::cout << grid->f_(2, 2, 1) << "\n";
   std::cout << grid->sum_density() << "\n";
 
   for (int nt = 0; nt <= nstep; ++nt) {
 #ifdef _log_
     std::cout << "step number = " << nt << std::endl;
 #endif
+    if (nt > 10) Fy = 0;
+    std::setprecision(10);
     grid->compute_macro_var(Fx, Fy);
+    grid->write_vtk(nt);
+    for (int j = 0; j < ny; ++j) {
+      std::cout << grid->uysection(2)[j] << std::endl;
+    }
     grid->equilibrium_density();
     grid->collision(tau, Fx, Fy);
     grid->streaming();
-    grid->analytical_solution(tau, nt, Fx);
-    grid->write_vtk(nt);
+    // grid->analytical_solution(tau, nt, Fx);
     grid->compute_macro_var(Fx, Fy);
+    std::cout << grid->sum_density() << "\n";
   }
 
-  std::cout << "ux at x=2" << std::endl;
-  for (int j = 0; j < ny; ++j) {
-    std::cout << grid->uxsection(2)[j] << std::endl;
-  }
-  std::cout << "u_an at x=2" << std::endl;
+  /* std::cout << "uy at x=2" << std::endl;
+   for (int j = 0; j < ny; ++j) {
+     std::cout << grid->uysection(2)[j] << std::endl;
+   }*/
+  /*std::cout << "u_an at x=2" << std::endl;
   for (int j = 0; j < ny; ++j) {
     std::cout << std::setprecision(10) << grid->u_an_section(2)[j] << std::endl;
-  }
+  }*/
 }

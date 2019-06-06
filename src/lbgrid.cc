@@ -45,8 +45,11 @@ double lbgrid::sum_density() {
 }
 
 void lbgrid::compute_macro_var(double Fx, double Fy) {
+  double fy;
   for (int i = 0; i < nx_; ++i) {
     for (int j = 0; j < ny_; ++j) {
+      fy = 0.;
+      if (j == ny_ / 2) fy = Fy;
       rho = ux[i][j] = uy[i][j] = 0.;
       for (int k = 0; k < Q; ++k) {
         rho += f[i][j][k];
@@ -54,7 +57,7 @@ void lbgrid::compute_macro_var(double Fx, double Fy) {
         uy[i][j] += f[i][j][k] * ey[k];
       }
       ux[i][j] = ux[i][j] / rho + Fx / 2;
-      uy[i][j] = uy[i][j] / rho + Fy / 2;
+      uy[i][j] = uy[i][j] / rho + fy / 2;
     }
   }
 }
@@ -77,16 +80,18 @@ void lbgrid::equilibrium_density() {
 }
 
 void lbgrid::collision(double tau, double Fx, double Fy) {
-
+  double fy;
   double S[9];
   for (int i = 0; i < nx_; ++i) {
     for (int j = 0; j < ny_; ++j) {
+      fy = 0.;
+      if (j == ny_ / 2) fy = Fy;
       for (int k = 0; k < Q; ++k) {
         S[k] = (1. - 0.5 / tau) * w[k] *
-               (3 * (Fx * ex[k] + Fy * ey[k]) +
-                9 * (Fx * ex[k] + Fy * ey[k]) *
+               (3 * (Fx * ex[k] + fy * ey[k]) +
+                9 * (Fx * ex[k] + fy * ey[k]) *
                     (ex[k] * ux[i][j] + ey[k] * uy[i][j]) -
-                3 * (ux[i][j] * Fx + uy[i][j] * Fy));
+                3 * (ux[i][j] * Fx + uy[i][j] * fy));
 
         fcol[i][j][k] = f[i][j][k] - (f[i][j][k] - feq[i][j][k]) / tau + S[k];
       }
@@ -129,7 +134,7 @@ void lbgrid::streaming() {
   }
 }
 
-void lbgrid::analytical_solution(double tau, int nt, double Fx) {
+/*void lbgrid::analytical_solution(double tau, int nt, double Fx) {
   double y, t;
   double a;
   double nu = (2 * tau - 1) / 6;
@@ -146,7 +151,7 @@ void lbgrid::analytical_solution(double tau, int nt, double Fx) {
       u_an[i][j] = umax * ((1. - y * y) - 4. * a);
     }
   }
-}
+}*/
 
 void lbgrid::write_vtk(int nt) {
   int i, j;
@@ -180,18 +185,18 @@ void lbgrid::write_vtk(int nt) {
     for (i = 0; i < nx_; ++i) {
       u_x = ux[i][j];
       u_y = uy[i][j];
-      fprintf(sortie, "%.4lf %.4lf 0.\n", u_x, u_y);
+      fprintf(sortie, "%.8lf %.8lf 0.\n", u_x, u_y);
     }
   }
 
-  fprintf(sortie, "VECTORS AnalVelocity float\n");
+  /* fprintf(sortie, "VECTORS AnalVelocity float\n");
 
-  for (j = 0; j < ny_; ++j) {
-    for (i = 0; i < nx_; ++i) {
-      uan = u_an[i][j];
-      fprintf(sortie, "%.4lf 0. 0.\n", uan);
-    }
-  }
+   for (j = 0; j < ny_; ++j) {
+     for (i = 0; i < nx_; ++i) {
+       uan = u_an[i][j];
+       fprintf(sortie, "%.4lf 0. 0.\n", uan);
+     }
+   }*/
   fclose(sortie);
 }
 
